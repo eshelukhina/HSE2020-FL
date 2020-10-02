@@ -96,7 +96,7 @@ def parse_P(a):
 
 def main():
     global s
-    f = open('text.txt')
+    f = open(sys.argv[1])
     s = str(f.read())
     ss = s
     k = 0
