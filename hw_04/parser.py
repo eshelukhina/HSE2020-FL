@@ -30,8 +30,9 @@ def parse_H(a):
 def parse_L():
     global pos
     global s
-    if re.match(r'[a-z]+', s[pos]):
+    while re.match(r'[a-zA-Z_]+[0-9]*', s[pos]):
         pos += 1
+    if re.match(r'[a-zA-Z_]+[0-9]*', s[pos - 1]):
         return False
     else:
         return True
@@ -41,12 +42,14 @@ def parse_B(parse_item, parse_sep, a):
     global s
     parse_item(a)
     if not parse_sep():
-        if not re.match(r'[a-z]+', s[pos]):
+        if not re.match(r'[a-zA-Z_]+[0-9]*', s[pos]) and s[pos] != '(':
             if s[pos - 1] == ',':
-                s_err = "The conjunction has no right subexpression. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
+                s_err = "The conjunction has no right subexpression. Error in line " + str(
+                    a[pos][0]) + ", colon " + str(a[pos][1]) + "."
                 sys.exit(s_err)
-            if s[pos - 1] == ';':
-                s_err = "The disjunction has no right subexpression. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
+            if s[pos - 1] == ';'and s[pos] != '(':
+                s_err = "The disjunction has no right subexpression. Error in line " + str(
+                    a[pos][0]) + ", colon " + str(a[pos][1]) + "."
                 sys.exit(s_err)
         parse_B(parse_item, parse_sep, a)
 
@@ -96,8 +99,9 @@ def parse_P(a):
 
 def main():
     global s
-    f = open(sys.argv[1])
-    s = str(f.read())
+    # f = open(sys.argv[1])
+    # s = str(f.read())
+    s = input()
     ss = s
     k = 0
     s = s.replace(' ', '')
@@ -129,4 +133,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
