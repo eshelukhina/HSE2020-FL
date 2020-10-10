@@ -1,0 +1,13 @@
+Ex :- f; k.
+:- Nohead.
+HSE :- a; (a).
+NoRightOp :- f; .
+NoDot :- f; g
+HSe :- (b; (b)).
+Ex :- a; (b, c d, e).
+HelloWorld.
+f :- ((k) ;
+ c), d ,
+          (f, a).
+NoBody :-
+Function :- qwerty, qwerty; qwerty, qwerty.
