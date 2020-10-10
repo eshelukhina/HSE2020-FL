@@ -6,17 +6,6 @@ from lex import tokens
 sys_err = False
 sys_err_string = ''
 
-"""
-Описание логики: 
-H  -> A1. | A1  :- E.        H  -  head
-E  -> (M + E) | M            E  - expression
-M  -> (P * M) | P            M  - disjunction
-P  -> A1 | (E)               P  - conjunction
-A1 -> L A2 | L               A1 - atom1
-A2 -> A1 | (A3) | (A3) A2    A2 - atom2
-A3 -> L A2                   A3 - atom3, L - literal
-"""
-
 
 def p_H_A1(p):
     'head : atom1 DOT'
