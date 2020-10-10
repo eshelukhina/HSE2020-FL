@@ -93,7 +93,7 @@ def main():
     in_file_name = sys.argv[1]  # input file
     i = 0
     dot_ix = 0
-    while i < len(s) and s[i] != '.':
+    while i < len(in_file_name):
         if in_file_name[i] == '.':
             dot_ix = i
         i += 1
@@ -104,7 +104,7 @@ def main():
     prev_pos = 0
     file_out = open(out_file_name, 'w')  # open output file
     while i < len(s):
-        while s[i] != '.':
+        while i < len(s) and s[i] != '.':
             i += 1
         i += 1
         current_expression = s[prev_pos:i]
