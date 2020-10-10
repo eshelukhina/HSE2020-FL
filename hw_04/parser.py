@@ -18,7 +18,7 @@ def parse_H(a):
         sys_err = True
     if sys_err:
         return
-    if s[pos] == ':' and s[pos + 1] == '-':
+    if s[pos] == ':' and s[pos + 1] == '-' and a[pos][1] == a[pos + 1][1] - 1:
         pos += 2
         if s[pos] == '.':
             sys_err_string = "No body. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
@@ -32,7 +32,7 @@ def parse_H(a):
     if s[pos] == '.':
         pos += 1
     else:
-        sys_err_string = "Something goes wrong. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
+        sys_err_string = "Incorrect or extra symbol. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
         sys_err = True
         if sys_err:
             return
@@ -118,9 +118,8 @@ def main():
     global s
     global sys_err_string
     global sys_err
-    # f = open(sys.argv[1])
-    # s = str(f.read())
-    s = input()
+    f = open(sys.argv[1])
+    s = str(f.read())
     ss = s
     k = 0
     s = s.replace(' ', '')
@@ -155,3 +154,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
