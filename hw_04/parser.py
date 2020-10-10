@@ -12,7 +12,7 @@ def parse_H(a):
     global s
     global sys_err
     global sys_err_string
-    err_L = parse_L()
+    err_L = parse_L(a)
     if err_L:
         sys_err_string = "No head. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
         sys_err = True
@@ -32,19 +32,29 @@ def parse_H(a):
     if s[pos] == '.':
         pos += 1
     else:
-        sys_err_string = "Incorrect or extra symbol. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
+        sys_err_string = "Incorrect or extra symbol. Error in line " + str(a[pos][0]) + ", colon " + str(
+            a[pos][1]) + "."
         sys_err = True
         if sys_err:
             return
 
 
-def parse_L():
+def parse_L(a):
     global pos
     global s
-    while re.match(r'[a-zA-Z_]+[0-9]*', s[pos]):
+    global sys_err
+    global sys_err_string
+    while re.match(r'[a-zA-Z_]+', s[pos]):
         pos += 1
-    if re.match(r'[a-zA-Z_]+[0-9]*', s[pos - 1]):
+    if re.match(r'[a-zA-Z_]+', s[pos - 1]):
         return False
+    elif s[pos] != '(':
+        sys_err = True
+        sys_err_string = "Incorrect or extra symbol. Error in line " + str(a[pos][0]) + ", colon " + str(
+            a[pos][1]) + "."
+        return True
+    elif s[pos] == '(':
+        return True
     else:
         return True
 
@@ -55,7 +65,7 @@ def parse_B(parse_item, parse_sep, a):
     global sys_err_string
     parse_item(a)
     if not parse_sep():
-        if not re.match(r'[a-zA-Z_]+[0-9]*', s[pos]) and s[pos] != '(':
+        if not re.match(r'[a-zA-Z_]+', s[pos]) and s[pos] != '(':
             if s[pos - 1] == ',':
                 sys_err_string = "The conjunction has no right subexpression. Error in line " + str(
                     a[pos][0]) + ", colon " + str(a[pos][1]) + "."
@@ -103,12 +113,16 @@ def parse_P(a):
     global pos
     global sys_err
     global sys_err_string
-    if parse_L():
+    if parse_L(a):
         if s[pos] == '(':
             pos += 1
+        if sys_err:
+            return
         parse_E(a)
         if s[pos] == ')':
             pos += 1
+            if sys_err:
+                return
         else:
             sys_err_string = "Unbalanced brackets. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
             sys_err = True
@@ -154,4 +168,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
