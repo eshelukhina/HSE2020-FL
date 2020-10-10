@@ -11,5 +11,18 @@
 ```
 ### Сборка
 ```
-  python3 parse.py "test_file_name"
+  python3 parse.py test.txt
+```
+### Содержание выходного файла
+```
+Ex, TSTILE, f, PLUS, k, DOT
+Syntax error
+HSE, TSTILE, a, PLUS, LBR, a, RBR, DOT
+Syntax error
+Syntax error
+Ex, TSTILE, a, PLUS, LBR, b, MULT, c, d, MULT, e, RBR, DOT
+HelloWorld, DOT
+f, TSTILE, LBR, LBR, k, RBR, PLUS, c, RBR, MULT, d, MULT, LBR, f, MULT, a, RBR, DOT
+Syntax error
+Syntax error
 ```
