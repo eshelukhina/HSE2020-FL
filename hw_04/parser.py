@@ -3,28 +3,39 @@ import re
 
 pos = 0
 s = ''
+sys_err = False
+sys_err_string = "Correct relationship definition."
 
 
 def parse_H(a):
     global pos
     global s
+    global sys_err
+    global sys_err_string
     err_L = parse_L()
     if err_L:
-        s_err = "No head. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
-        sys.exit(s_err)
+        sys_err_string = "No head. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
+        sys_err = True
+    if sys_err:
+        return
     if s[pos] == ':' and s[pos + 1] == '-':
         pos += 2
         if s[pos] == '.':
-            s_err = "No body. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
-            sys.exit(s_err)
+            sys_err_string = "No body. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
+            sys_err = True
+        if sys_err:
+            return
         else:
             parse_E(a)
+            if sys_err:
+                return
     if s[pos] == '.':
-        print("Correct relationship definition.")
         pos += 1
     else:
-        s_err = "Something goes wrong. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
-        sys.exit(s_err)
+        sys_err_string = "Something goes wrong. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
+        sys_err = True
+        if sys_err:
+            return
 
 
 def parse_L():
@@ -40,17 +51,21 @@ def parse_L():
 
 def parse_B(parse_item, parse_sep, a):
     global s
+    global sys_err
+    global sys_err_string
     parse_item(a)
     if not parse_sep():
         if not re.match(r'[a-zA-Z_]+[0-9]*', s[pos]) and s[pos] != '(':
             if s[pos - 1] == ',':
-                s_err = "The conjunction has no right subexpression. Error in line " + str(
+                sys_err_string = "The conjunction has no right subexpression. Error in line " + str(
                     a[pos][0]) + ", colon " + str(a[pos][1]) + "."
-                sys.exit(s_err)
-            if s[pos - 1] == ';'and s[pos] != '(':
-                s_err = "The disjunction has no right subexpression. Error in line " + str(
+                sys_err = True
+                return
+            if s[pos - 1] == ';' and s[pos] != '(':
+                sys_err_string = "The disjunction has no right subexpression. Error in line " + str(
                     a[pos][0]) + ", colon " + str(a[pos][1]) + "."
-                sys.exit(s_err)
+                sys_err = True
+                return
         parse_B(parse_item, parse_sep, a)
 
 
@@ -86,6 +101,8 @@ def parse_mul():
 def parse_P(a):
     global s
     global pos
+    global sys_err
+    global sys_err_string
     if parse_L():
         if s[pos] == '(':
             pos += 1
@@ -93,12 +110,14 @@ def parse_P(a):
         if s[pos] == ')':
             pos += 1
         else:
-            s_err = "Unbalanced brackets. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
-            sys.exit(s_err)
+            sys_err_string = "Unbalanced brackets. Error in line " + str(a[pos][0]) + ", colon " + str(a[pos][1]) + "."
+            sys_err = True
 
 
 def main():
     global s
+    global sys_err_string
+    global sys_err
     # f = open(sys.argv[1])
     # s = str(f.read())
     s = input()
@@ -126,9 +145,12 @@ def main():
             char_num_in_str += 1
     n = len(s)
     if s[n - 1] != '.':
-        sys.exit("No point.")
-    while pos < n:
-        parse_H(a)
+        sys_err = True
+        sys_err_string = "No point. Error in line " + str(a[n - 1][0]) + ", colon " + str(a[n - 1][1]) + "."
+    else:
+        while pos < n and not sys_err:
+            parse_H(a)
+    print(sys_err_string)
 
 
 if __name__ == "__main__":
