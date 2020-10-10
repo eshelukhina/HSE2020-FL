@@ -93,7 +93,7 @@ def main():
     in_file_name = sys.argv[1]  # input file
     i = 0
     dot_ix = 0
-    while i < len(in_file_name):
+    while i < len(s) and s[i] != '.':
         if in_file_name[i] == '.':
             dot_ix = i
         i += 1
