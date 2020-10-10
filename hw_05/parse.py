@@ -92,21 +92,41 @@ def p_error(p):
     global sys_err
     global sys_err_string
     sys_err = True
-    sys_err_string = "Syntax error"
+    sys_err_string = "Syntax error\n"
 
 
 parser = yacc.yacc()
 
-while True:
-    try:
-        s = input("calc> ")
-    except EOFError:
-        break
-    if not s:
-        continue
-    result = parser.parse(s)
-    if sys_err:
-        print(sys_err_string)
-        sys_err = False
-    else:
-        print(result)
+
+def main():
+    global sys_err
+    global sys_err_string
+    in_file_name = sys.argv[1]  # input file
+    i = 0
+    dot_ix = 0
+    while i < len(in_file_name):
+        if in_file_name[i] == '.':
+            dot_ix = i
+        i += 1
+    out_file_name = in_file_name[:-(len(in_file_name) - dot_ix - 1)] + "out"  # output file
+    file_in = open(in_file_name)  # open file
+    s = str(file_in.read())  # read file
+    i = 0
+    prev_pos = 0
+    file_out = open(out_file_name, 'w')  # open output file
+    while i < len(s):
+        while s[i] != '.':
+            i += 1
+        i += 1
+        current_expression = s[prev_pos:i]
+        result = parser.parse(current_expression)
+        if sys_err:
+            file_out.write(sys_err_string)
+            sys_err = False
+        else:
+            file_out.write(result + '\n')
+        prev_pos = i
+
+
+if __name__ == "__main__":
+    main()
