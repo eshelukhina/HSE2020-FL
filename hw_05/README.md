@@ -23,6 +23,7 @@ Syntax error
 Ex, TSTILE, a, PLUS, LBR, b, MULT, c, d, MULT, e, RBR, DOT
 HelloWorld, DOT
 f, TSTILE, LBR, LBR, k, RBR, PLUS, c, RBR, MULT, d, MULT, LBR, f, MULT, a, RBR, DOT
+Function, TSTILE, qwerty, MULT, qwerty, PLUS, qwerty, MULT, qwerty, DOT
 Syntax error
-Syntax error
+
 ```
