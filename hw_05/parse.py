@@ -72,9 +72,14 @@ def p_A2_A3_A2(p):
     p[0] = f'LBR, {p[2]}, RBR, {p[4]}'
 
 
-def p_A3_L_A2(p):
-    'atom3 : LIT atom2'
-    p[0] = f'{p[1]}, {p[2]}'
+def p_A3_A1(p):
+    'atom3 : atom1'
+    p[0] = f'{p[1]}'
+
+
+def p_A3_A3(p):
+    'atom3 : LBR atom3 RBR'
+    p[0] = f'LBR, {p[2]}, RBR'
 
 
 def p_error(p):
@@ -107,6 +112,8 @@ def main():
         while i < len(s) and s[i] != '.':
             i += 1
         i += 1
+        s = s.replace('\n', '')
+        s = s.replace('\t', '')
         current_expression = s[prev_pos:i]
         result = parser.parse(current_expression)
         if sys_err:
