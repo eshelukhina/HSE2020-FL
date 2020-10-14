@@ -9,5 +9,5 @@ HelloWorld.
 f :- ((k) ;
  c), d ,
           (f, a).
-NoBody :-
 Function :- qwerty, qwerty; qwerty, qwerty.
+NoBody :-
