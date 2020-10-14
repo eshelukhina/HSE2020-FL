@@ -1,3 +1,5 @@
+import sys
+
 from parsita import *
 from collections import namedtuple
 from parsita.util import constant
@@ -24,23 +26,42 @@ class PrologParser(TextParsers, whitespace='[ \t\n]*'):
 
 
 def main():
-    strings = [
-        "f (cons h t) :- g h, f t."
-    ]
-
-    for string in strings:
-        result = str(PrologParser.head.parse(string))
-        result = result.replace(')', '')
-        result = result.replace('(', '')
-        result = result.replace('\'', '')
-        result = result.replace(',', '')
-        result = result.replace('[', '(')
-        result = result.replace(']', ')')
-        result = result.replace('"', '')
+    in_file_name = sys.argv[1]  # input file
+    i = 0
+    dot_ix = 0
+    while i < len(in_file_name):
+        if in_file_name[i] == '.':
+            dot_ix = i
+        i += 1
+    out_file_name = in_file_name[:-(len(in_file_name) - dot_ix - 1)] + "out"  # output file
+    file_in = open(in_file_name)  # open file
+    s = str(file_in.read())  # read file
+    i = 0
+    prev_pos = 0
+    file_out = open(out_file_name, 'w')  # open output file
+    while i < len(s):
+        while i < len(s) and s[i] != '.':
+            i += 1
+        i += 1
+        s = s.replace('\n', '')
+        s = s.replace('\t', '')
+        current_expression = s[prev_pos:i]
+        print(current_expression + '\n')
+        result = str(PrologParser.head.parse(current_expression))
         if result[:7] == "Success":
-            print(result[8:len(result) - 1])
+            result = result.replace(')', '')
+            result = result.replace('(', '')
+            result = result.replace('\'', '')
+            result = result.replace(',', '')
+            result = result.replace('[', '(')
+            result = result.replace(']', ')')
+            result = result.replace('"', '')
+            result = result.replace('( (', '((')
+            result = result.replace(') )', '))')
+            file_out.write(result[8:len(result) - 1] + '\n')
         else:
-            print("Syntax error!")
+            file_out.write("Syntax error!\n")
+        prev_pos = i
 
 
 if __name__ == "__main__":
