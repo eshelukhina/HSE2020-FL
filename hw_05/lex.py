@@ -2,8 +2,8 @@ import ply.lex as lex
 
 tokens = [
     'LIT',
-    'PLUS',
-    'MULT',
+    'DIS',
+    'CON',
     'LBR',
     'RBR',
     'DOT',
@@ -11,8 +11,8 @@ tokens = [
 ]
 
 t_LIT = r'[A-Za-z_][A-Za-z_0-9]*'
-t_PLUS = r'\;'
-t_MULT = r'\,'
+t_DIS = r'\;'
+t_CON = r'\,'
 t_DOT = r'\.'
 t_LBR = r'\('
 t_RBR = r'\)'

@@ -18,8 +18,8 @@ def p_H_A1_E(p):
 
 
 def p_E_M_E(p):
-    'expression : disjunction PLUS expression'
-    p[0] = f'{p[1]}, PLUS, {p[3]}'
+    'expression : disjunction DIS expression'
+    p[0] = f'{p[1]}, DIS, {p[3]}'
 
 
 def p_E_M(p):
@@ -28,8 +28,8 @@ def p_E_M(p):
 
 
 def p_M_P_M(p):
-    'disjunction : conjunction MULT disjunction'
-    p[0] = f'{p[1]}, MULT, {p[3]}'
+    'disjunction : conjunction CON disjunction'
+    p[0] = f'{p[1]}, CON, {p[3]}'
 
 
 def p_M_P(p):
