@@ -7,7 +7,7 @@
 - P  -> A1 | (E)               P  - conjunction
 - A1 -> L A2 | L               A1 - atom1
 - A2 -> A1 | (A3) | (A3) A2    A2 - atom2
-- A3 -> L A2                   A3 - atom3, L - literal
+- A3 -> A1 | (A3)              A3 - atom3, L - literal
 ```
 ### Сборка
 ```
