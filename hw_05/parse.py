@@ -44,7 +44,7 @@ def t_error(t):
     global sys_err_string
     global sys_err
     sys_err_string = "Illegal character: \"" + t.value[0] + "\". Error in line " + str(row_num) + ", colon " + str(
-        find_column(t)) + "."
+        find_column(t)) + ".\n"
     sys_err = True
     t.lexer.skip(1)
 
