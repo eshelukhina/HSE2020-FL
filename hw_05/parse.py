@@ -1,10 +1,55 @@
 import ply.yacc as yacc
 import sys
 
-from lex import tokens
-
 sys_err = False
 sys_err_string = ''
+s = ''
+row_num = 1
+
+import ply.lex as lex
+
+tokens = [
+    'LIT',
+    'DIS',
+    'CON',
+    'LBR',
+    'RBR',
+    'DOT',
+    'TSTILE'
+]
+
+t_LIT = r'[A-Za-z_][A-Za-z_0-9]*'
+t_DIS = r'\;'
+t_CON = r'\,'
+t_DOT = r'\.'
+t_LBR = r'\('
+t_RBR = r'\)'
+t_TSTILE = r':-'
+
+
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
+
+t_ignore = ' \t'
+
+
+def find_column(token):
+    line_start = s.rfind('\n', 0, token.lexpos) + 1
+    return (token.lexpos - line_start) + 1
+
+
+def t_error(t):
+    global sys_err_string
+    global sys_err
+    sys_err_string = "Illegal character: \"" + t.value[0] + "\". Error in line " + str(row_num) + ", colon " + str(
+        find_column(t)) + "."
+    sys_err = True
+    t.lexer.skip(1)
+
+
+lexer = lex.lex()
 
 
 def p_H_A1(p):
@@ -86,15 +131,17 @@ def p_error(p):
     global sys_err
     global sys_err_string
     sys_err = True
-    sys_err_string = "Syntax error\n"
+    sys_err_string = "Syntax error!\n"
 
 
 parser = yacc.yacc()
 
 
 def main():
+    global s
     global sys_err
     global sys_err_string
+    global row_num
     in_file_name = sys.argv[1]  # input file
     i = 0
     dot_ix = 0
@@ -105,6 +152,8 @@ def main():
     out_file_name = in_file_name[:-(len(in_file_name) - dot_ix - 1)] + "out"  # output file
     file_in = open(in_file_name)  # open file
     s = str(file_in.read())  # read file
+    if s[len(s) - 1] == '\n':
+        s = s[:-1]
     i = 0
     prev_pos = 0
     file_out = open(out_file_name, 'w')  # open output file
@@ -112,10 +161,12 @@ def main():
         while i < len(s) and s[i] != '.':
             i += 1
         i += 1
-        s = s.replace('\n', '')
         s = s.replace('\t', '')
         current_expression = s[prev_pos:i]
         result = parser.parse(current_expression)
+        prev_len = len(current_expression)
+        current_expression = current_expression.replace('\n', '')
+        row_num += prev_len - len(current_expression)
         if sys_err:
             file_out.write(sys_err_string)
             sys_err = False
