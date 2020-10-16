@@ -43,8 +43,7 @@ def find_column(token):
 def t_error(t):
     global sys_err_string
     global sys_err
-    sys_err_string = "Illegal character: \"" + t.value[0] + "\". Error in line " + str(row_num) + ", colon " + str(
-        find_column(t)) + ".\n"
+    sys_err_string = "Illegal character: \"" + t.value[0] + "\". Error in line " + str(row_num) + ".\n"
     sys_err = True
     t.lexer.skip(1)
 
@@ -163,10 +162,10 @@ def main():
         i += 1
         s = s.replace('\t', '')
         current_expression = s[prev_pos:i]
-        result = parser.parse(current_expression)
         prev_len = len(current_expression)
         current_expression = current_expression.replace('\n', '')
         row_num += prev_len - len(current_expression)
+        result = parser.parse(s[prev_pos:i])
         if sys_err:
             file_out.write(sys_err_string)
             sys_err = False
