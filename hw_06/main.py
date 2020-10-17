@@ -7,13 +7,17 @@ from parsita.util import splat
 
 
 class PrologParser(TextParsers, whitespace='[ \t\n]*'):
-    literal = reg(r'[A-Za-z_][A-Za-z_0-9]*') > (lambda x: ["Atom", str(x)])
+    module = lit('module') > constant("module")
+    literal = reg(r'[a-z_][a-z_0-9]*') > (lambda x: ["Atom", str(x)])
+    identificator = reg(r'[a-z_][a-z_0-9]*') > (lambda x: ["ID", str(x)])
     disunction = lit(';') > constant("DIS")
     conjunction = lit(',') > constant("CON")
     dot = lit('.') > constant("DOT")
     lbr = lit('(')
     rbr = lit(')')
     tstile = lit(':-') > constant("TSTILE")
+    # ---------------------------------------------------------------
+    mod = module & identificator & dot
     # ---------------------------------------------------------------
     head = atom1 & tstile & expression & dot | atom1 & dot
     expression = M & disunction & expression | M
@@ -23,6 +27,19 @@ class PrologParser(TextParsers, whitespace='[ \t\n]*'):
     atom2 = lbr & atom3 & rbr & atom2 | atom1 | lbr & atom3 & rbr
     atom3 = atom1 | lbr & atom3 & rbr
     # ----------------------------------------------------------------
+
+
+def print_result(result, file_out):
+    result = result.replace(')', '')
+    result = result.replace('(', '')
+    result = result.replace('\'', '')
+    result = result.replace(',', '')
+    result = result.replace('[', '(')
+    result = result.replace(']', ')')
+    result = result.replace('"', '')
+    result = result.replace('( (', '((')
+    result = result.replace(') )', '))')
+    file_out.write(result[8:len(result) - 1] + '\n')
 
 
 def main():
@@ -46,21 +63,15 @@ def main():
         s = s.replace('\n', '')
         s = s.replace('\t', '')
         current_expression = s[prev_pos:i]
-        print(current_expression + '\n')
-        result = str(PrologParser.head.parse(current_expression))
+        result = str(PrologParser.mod.parse(current_expression))
         if result[:7] == "Success":
-            result = result.replace(')', '')
-            result = result.replace('(', '')
-            result = result.replace('\'', '')
-            result = result.replace(',', '')
-            result = result.replace('[', '(')
-            result = result.replace(']', ')')
-            result = result.replace('"', '')
-            result = result.replace('( (', '((')
-            result = result.replace(') )', '))')
-            file_out.write(result[8:len(result) - 1] + '\n')
+            print_result(result, file_out)
         else:
-            file_out.write("Syntax error!\n")
+            result = str(PrologParser.head.parse(current_expression))
+            if result[:7] == "Success":
+                print_result(result, file_out)
+            else:
+                file_out.write("Syntax error!\n")
         prev_pos = i
 
 
