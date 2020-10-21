@@ -7,7 +7,7 @@ from parsita.util import constant
 class PrologParser(TextParsers, whitespace='[ \t\n]*'):
     module = lit('module') > constant("module")
     literal = reg(r'[a-z_][a-zA-Z_0-9]*') > (lambda x: ["Atom", str(x)])
-    id = reg('[a-z_][a-zA-Z_0-9]*') > (lambda x: ["ID", str(x)])
+    id = reg(r'[a-z_][a-zA-Z_0-9]*') > (lambda x: ["ID", str(x)])
     identificator = pred(id, lambda x: x != ['module'], 'ID')
     disunction = lit(';') > constant("DIS")
     conjunction = lit(',') > constant("CON")
