@@ -26,6 +26,7 @@ class PrologParser(TextParsers, whitespace='[ \t\n]*'):
     expression = M & disunction & expression | M
     M = P & conjunction & M | P
     P = lbr & expression & rbr | atom1
+    atom = head_atom & dot
     atom1 = literal & atom2 | literal
     head_atom = identificator & atom2 | identificator
     atom2 = lbr & atom3 & rbr & atom2 | atom1 | lbr & atom3 & rbr
@@ -95,7 +96,7 @@ def parse_atom(in_file_name):
         s = s.replace('\n', '')
         s = s.replace('\t', '')
         current_expression = s[prev_pos:i]
-        result = str(PrologParser.head.parse(current_expression))
+        result = str(PrologParser.atom.parse(current_expression))
         if result[:7] == "Success":
             print_result(result, file_out)
             atom_count += 1
@@ -132,6 +133,33 @@ def parse_module(in_file_name):
         prev_pos = i
 
 
+def parse_relation(in_file_name):
+    out_file_name = in_file_name + ".out"  # output file
+    file_in = open(in_file_name)  # open file
+    s = str(file_in.read())  # read file
+    i = 0
+    prev_pos = 0
+    atom_count = 0
+    file_out = open(out_file_name, 'w')  # open output file
+    while s[len(s) - 1] == ' ' or s[len(s) - 1] == '\n' or s[len(s) - 1] == '\t':
+        s = s[:-1]
+    while i < len(s) and atom_count < 1:
+        while i < len(s) and s[i] != '.':
+            i += 1
+        i += 1
+        s = s.replace('\n', '')
+        s = s.replace('\t', '')
+        current_expression = s[prev_pos:i]
+        result = str(PrologParser.head.parse(current_expression))
+        if result[:7] == "Success":
+            print_result(result, file_out)
+            atom_count += 1
+        else:
+            file_out.write("Syntax error!\n")
+            atom_count += 1
+        prev_pos = i
+
+
 def main():
     if len(sys.argv) == 3:
         if sys.argv[1] == "--prog":
@@ -140,6 +168,8 @@ def main():
             parse_atom(sys.argv[2])
         elif sys.argv[1] == "--module":
             parse_module(sys.argv[2])
+        elif sys.argv[1] == "--relation":
+            parse_relation(sys.argv[2])
         else:
             print("Unknown flag\n")
     else:
